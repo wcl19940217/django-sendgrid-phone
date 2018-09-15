@@ -151,5 +151,53 @@ Stats：400、
 202：
 成功状态。
 
+安装：pip install celery  
+pip install eventlet
+
+需要提前安装redis。
+（Download, extract and compile Redis with:
+$ wget http://download.redis.io/releases/redis-4.0.11.tar.gz
+$ tar xzf redis-4.0.11.tar.gz
+$ cd redis-4.0.11
+$ make
+The binaries that are now compiled are available in the src directory. Run Redis with:
+启动服务
+$ src/redis-server
+You can interact with Redis using the built-in client:
+）
+运行redis，rebitmq或者其他。src/redis-server redis.conf
+
+
+
+创建一个tasks.py文件。
+from celery import Celery
+import time
+
+
+app = Celery('tasks', broker='redis://192.168.118.130:6379/0',
+             backend="redis://192.168.118.130:6379/0")
+
+
+@app.task
+def send_mail():
+    print('hello world')
+
+创建一个需要执行的文件。T1.py
+from tasks import send_mail
+
+if __name__ == '__main__':
+    send_mail.delay() #括号里面可以放参数，把要要发送的邮件的地址放进去。
+
+pycharm里面命令行执行：
+
+celery -A tasks worker --loglevel=info -P eventlet
+
+执行需要执行的文件，然后会收到相关问题。返回的问题等。
+
+
+send_mail.delay()  可以送参数，把参数直接放进去。邮箱地址。
+
+
+
 
 
